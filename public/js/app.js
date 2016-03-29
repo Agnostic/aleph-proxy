@@ -31,3 +31,7 @@ app.controller('pullsController', ['$scope', '$http', function($scope, $http) {
     });
   });
 }]);
+
+setTimeout(function() {
+  location.reload();
+}, 1000 * 15);
