@@ -32,7 +32,7 @@ app.get('/', function(req, res) {
       }
     }, function(error, response, body) {
       // res.json(JSON.parse(body));
-      res.json(JSON.parse(req.session));
+      res.json(req.session);
       // res.render('pulls', JSON.parse(body));
     });
   } else {
