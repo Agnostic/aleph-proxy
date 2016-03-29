@@ -16,6 +16,7 @@ html
         .panel-body
           div(ng-bind-html='pull.body | to_trusted')
         .panel-footer
+          div(ng-hide='pull.approvedBy.length') Waiting for reviews
           div(ng-show='pull.approvedBy.length') Approved by: <a ng-href="{{user.url}}" target="_blank" ng-repeat="user in pull.approvedBy">{{ user.user }}</a>
 
 
