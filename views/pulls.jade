@@ -2,15 +2,17 @@ html
   head
     title PR Reviewer
     link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/app.css')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js')
   body(ng-app="prApp")
 
     .container(ng-controller='pullsController')
       h3 PR Reviewer
+      hr
 
       .panel.panel-primary(ng-repeat="pull in pulls")
         .panel-heading
-          h3.panel-title {{ pull.title }}
+          a(ng-href='pull.url', target='_blank').panel-title {{ pull.title }}
         .panel-body
           div(ng-bind-html='pull.body | to_trusted')
         .panel-footer
