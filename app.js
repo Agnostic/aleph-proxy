@@ -3,7 +3,7 @@ var express = require('express'),
   session = require('express-session'),
   request = require('request'),
   config = {
-    authorizeUrl: 'https://github.com/login/oauth/authorize?client_id=d3d7cbd7dce23dd9de98',
+    authorizeUrl: 'https://github.com/login/oauth/authorize?client_id=d3d7cbd7dce23dd9de98&scope=user,repo',
     githubUrl: 'https://github.com',
     apiUrl: 'https://api.github.com',
     userAgent: 'wepow-app',
@@ -27,8 +27,6 @@ app.get('/', function(req, res) {
     request({
       url: config.apiUrl + '/orgs/wepow/repos?access_token=' + req.session.accessToken,
       headers: {
-        'X-OAuth-Scopes': 'repo, user',
-        'X-Accepted-OAuth-Scopes': 'user',
         'User-Agent': config.userAgent,
         Accept: 'application/json'
       }
