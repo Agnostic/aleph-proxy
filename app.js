@@ -31,7 +31,8 @@ app.get('/', function(req, res) {
         Accept: 'application/json'
       }
     }, function(error, response, body) {
-      res.json(JSON.parse(body));
+      // res.json(JSON.parse(body));
+      res.json(JSON.parse(req.session.teams));
       // res.render('pulls', JSON.parse(body));
     });
   } else {
@@ -59,7 +60,25 @@ app.get('/auth', function(req, res) {
         res.redirect(config.authorizeUrl);
       } else {
         req.session.accessToken = response.access_token;
-        res.redirect('/');
+
+        // Get user teams
+        request({
+          url: config.apiUrl + '/user/teams&access_token=' + req.session.access_token,
+          headers: {
+            Accept: 'application/json'
+          }
+        }, function(error, response, body) {
+          var teams = [];
+
+          body = JSON.parse(body);
+
+          for (var i = 0; i < body.length; i++) {
+            teams.push(body[i].name);
+          }
+
+          req.session.teams = teams;
+          res.redirect('/');
+        });
       }
     });
   } else {
