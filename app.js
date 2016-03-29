@@ -42,56 +42,58 @@ app.get('/', function(req, res) {
 });
 
 app.get('/auth', function(req, res) {
-  req.session.regenerate();
+  req.session.regenerate(function() {
 
-  if (req.query.code) {
-    request({
-      url: config.githubUrl + '/login/oauth/access_token',
-      method: 'POST',
-      headers: {
-        Accept: 'application/json'
-      },
-      qs: {
-        client_id: config.clientId,
-        client_secret: config.clientSecret,
-        code: req.query.code
-      }
-    }, function(error, response, body) {
-      var response = JSON.parse(body);
+    if (req.query.code) {
+      request({
+        url: config.githubUrl + '/login/oauth/access_token',
+        method: 'POST',
+        headers: {
+          Accept: 'application/json'
+        },
+        qs: {
+          client_id: config.clientId,
+          client_secret: config.clientSecret,
+          code: req.query.code
+        }
+      }, function(error, response, body) {
+        var response = JSON.parse(body);
 
-      if (response.error) {
-        res.redirect(config.authorizeUrl);
-      } else {
-        req.session.accessToken = response.access_token;
+        if (response.error) {
+          res.redirect(config.authorizeUrl);
+        } else {
+          req.session.accessToken = response.access_token;
 
-        // Get user teams
-        request({
-          url: config.apiUrl + '/user/teams?access_token=' + req.session.access_token,
-          headers: {
-            'User-Agent': config.userAgent,
-            Accept: 'application/json'
-          }
-        }, function(error, response, body) {
-          return res.json(JSON.parse(body));
-          var teams = [],
-            response = [];
+          // Get user teams
+          request({
+            url: config.apiUrl + '/user/teams?access_token=' + req.session.access_token,
+            headers: {
+              'User-Agent': config.userAgent,
+              Accept: 'application/json'
+            }
+          }, function(error, response, body) {
+            return res.json(JSON.parse(body));
+            var teams = [],
+              response = [];
 
-          try {
-            response = JSON.parse(body);
-          } catch(e) {}
+            try {
+              response = JSON.parse(body);
+            } catch(e) {}
 
-          for (var i = 0; i < response.length; i++) {
-            teams.push(response[i].name);
-          }
+            for (var i = 0; i < response.length; i++) {
+              teams.push(response[i].name);
+            }
 
-          req.session.teams = teams;
-          res.redirect('/');
-        });
-      }
-    });
-  } else {
-    res.redirect(config.authorizeUrl);
-  }
+            req.session.teams = teams;
+            res.redirect('/');
+          });
+        }
+      });
+    } else {
+      res.redirect(config.authorizeUrl);
+    }
+    
+  });
 });
 
 app.get('/api', function(req, res) {
