@@ -25,14 +25,14 @@ app.set('view engine', 'jade');
 app.get('/', function(req, res) {
   if (req.session.accessToken) {
     request({
-      url: config.apiUrl + '/orgs/wepow/repos?access_token=' + req.session.accessToken,
+      url: config.apiUrl + '/repos/wepow/wepow-app/pulls?access_token=' + req.session.accessToken,
       headers: {
         'User-Agent': config.userAgent,
         Accept: 'application/json'
       }
     }, function(error, response, body) {
       res.json(JSON.parse(body));
-      // res.end(req.session.accessToken);
+      // res.render('pulls', JSON.parse(body));
     });
   } else {
     res.redirect('/auth');
