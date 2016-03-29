@@ -10,13 +10,13 @@ html
       h3 PR Reviewer
       hr
 
-      .panel.panel-primary(ng-repeat="pull in pulls")
+      .panel.panel-default(ng-repeat="pull in pulls", ng-class="{'panel-success': pull.approvedBy.length}")
         .panel-heading
           a(ng-href='{{pull.url}}', target='_blank').panel-title {{ pull.title }}
         .panel-body
           div(ng-bind-html='pull.body | to_trusted')
         .panel-footer
-          | Approved by: <a href="#">Agnostic</a>
+          div(ng-show='pull.approvedBy.length') Approved by: <a ng-href="{{user.url}}" target="_blank" ng-repeat="user in pull.approvedBy">{{ user.user }}</a>
 
 
     script(src='/js/app.js')
