@@ -2,7 +2,7 @@
   display: none;
 }
 
-.panel-heading a:hover,
-.panel-heading a:focus {
+.panel-primary a:hover,
+.panel-success a:focus {
   color: white;
 }
