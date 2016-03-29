@@ -42,7 +42,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/auth', function(req, res) {
-  req.session.destroy();
+  req.session.regenerate();
 
   if (req.query.code) {
     request({
