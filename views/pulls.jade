@@ -18,7 +18,7 @@ html
           div(ng-bind-html='pull.body | to_trusted')
         .panel-footer
           div(ng-hide='pull.approvedBy.length') Not approved yet.
-          div(ng-show='pull.approvedBy.length') Approved by: <a ng-href="{{user.url}}" target="_blank" ng-repeat="user in pull.approvedBy">{{ user.user }}<span ng-show="$index != pull.approvedBy.length">, &nbsp;</span></a>
+          div(ng-show='pull.approvedBy.length') Approved by: <a ng-href="{{user.url}}" target="_blank" ng-repeat="user in pull.approvedBy">{{ user.user }}<span ng-show="$index != (pull.approvedBy.length - 1)">, &nbsp;</span></a>.
 
 
     script(src='/js/app.js')
