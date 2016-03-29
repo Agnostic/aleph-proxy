@@ -41,7 +41,18 @@ app.get('/', function(req, res) {
           reviewers = reviewers[0].replace('@wepow/', '');
 
           if (_.contains(req.session.teams, reviewers.toLowerCase())) {
-            pulls.push(pr);
+            pulls.push({
+              url: pr.html_url,
+              title: pr.title,
+              body: pr.body,
+              author: {
+                name: pr.user.login,
+                url: pr.user.html_url,
+                avatar: pr.user.avatar_url
+              },
+              created_at: pr.created_at,
+              comments_url: pr.comments_url
+            });
           }
         }
       });
