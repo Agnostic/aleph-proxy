@@ -65,6 +65,7 @@ app.get('/auth', function(req, res) {
         request({
           url: config.apiUrl + '/user/teams&access_token=' + req.session.access_token,
           headers: {
+            'User-Agent': config.userAgent,
             Accept: 'application/json'
           }
         }, function(error, response, body) {
