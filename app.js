@@ -32,7 +32,7 @@ app.get('/', function(req, res) {
       }
     }, function(error, response, body) {
       // res.json(JSON.parse(body));
-      res.json(JSON.parse(req.session.teams));
+      res.json(JSON.parse(req.session));
       // res.render('pulls', JSON.parse(body));
     });
   } else {
@@ -69,12 +69,15 @@ app.get('/auth', function(req, res) {
             Accept: 'application/json'
           }
         }, function(error, response, body) {
-          var teams = [];
+          var teams = [],
+            response = [];
 
-          body = JSON.parse(body);
+          try {
+            response = JSON.parse(body);
+          } catch(e) {}
 
-          for (var i = 0; i < body.length; i++) {
-            teams.push(body[i].name);
+          for (var i = 0; i < response.length; i++) {
+            teams.push(response[i].name);
           }
 
           req.session.teams = teams;
