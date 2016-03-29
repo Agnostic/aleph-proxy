@@ -30,8 +30,7 @@ app.get('/', function(req, res) {
         'User-Agent': config.userAgent,
         Accept: 'application/json'
       }
-    }, function(error, response, b
-      ody) {
+    }, function(error, response, body) {
       res.json(JSON.parse(body));
       // res.end(req.session.accessToken);
     });
