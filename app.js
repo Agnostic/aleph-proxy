@@ -2,6 +2,7 @@ var express = require('express'),
   app = express(),
   session = require('express-session'),
   request = require('request'),
+  _ = require('underscore'),
   config = {
     authorizeUrl: 'https://github.com/login/oauth/authorize?client_id=d3d7cbd7dce23dd9de98&scope=user,repo',
     githubUrl: 'https://github.com',
@@ -63,7 +64,7 @@ app.get('/auth', function(req, res) {
 
         // Get user teams
         request({
-          url: config.apiUrl + '/user/teams&access_token=' + req.session.access_token,
+          url: config.apiUrl + '/user/teams?access_token=' + req.session.access_token,
           headers: {
             'User-Agent': config.userAgent,
             Accept: 'application/json'

@@ -12,6 +12,7 @@
     "express": "^4.13.4",
     "express-session": "^1.13.0",
     "jade": "^1.11.0",
-    "request": "^2.69.0"
+    "request": "^2.69.0",
+    "underscore": "^1.8.3"
   }
 }
