@@ -4,6 +4,7 @@ html
     link(rel='stylesheet', href='/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/app.css')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js')
   body(ng-app="prApp")
 
     .container(ng-controller='pullsController')
@@ -17,7 +18,7 @@ html
           div(ng-bind-html='pull.body | to_trusted')
         .panel-footer
           div(ng-hide='pull.approvedBy.length') Not approved yet.
-          div(ng-show='pull.approvedBy.length') Approved by: <a ng-href="{{user.url}}" target="_blank" ng-repeat="user in pull.approvedBy">{{ user.user }}</a>
+          div(ng-show='pull.approvedBy.length') Approved by: <a ng-href="{{user.url}}" target="_blank" ng-repeat="user in pull.approvedBy">{{ user.user }}<span ng-show="$index != pull.approvedBy.length">, &nbsp;</span></a>
 
 
     script(src='/js/app.js')
