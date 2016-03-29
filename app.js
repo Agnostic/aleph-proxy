@@ -38,7 +38,7 @@ app.get('/', function(req, res) {
         var reviewers = pr.body.match(/@wepow\/\w+/);
 
         if (reviewers) {
-          reviewers = reviewers[0].replace('@wepow/');
+          reviewers = reviewers[0].replace('@wepow/', '');
 
           if (_.contains(req.session.teams, reviewers.toLowerCase())) {
             pulls.push(pr);
