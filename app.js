@@ -92,7 +92,7 @@ app.get('/auth', function(req, res) {
             } catch(e) {}
 
             for (var i = 0; i < response.length; i++) {
-              teams.push(response[i].name);
+              teams.push(response[i].name.toLowerCase());
             }
 
             req.session.teams = teams;
