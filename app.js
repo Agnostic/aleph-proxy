@@ -108,7 +108,7 @@ app.get('/api/pulls', function(req, res) {
 
           if (_.contains(req.session.teams, reviewers.toLowerCase())) {
             request({
-              url: pr.comments_url + '?access_token' + req.session.accessToken,
+              url: pr.comments_url + '?access_token=' + req.session.accessToken,
               headers: {
                 'User-Agent': config.userAgent,
                 Accept: 'application/json'
