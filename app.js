@@ -27,6 +27,8 @@ app.get('/', function(req, res) {
     request({
       url: config.apiUrl + '/user/repos?access_token=' + req.session.accessToken,
       headers: {
+        'X-OAuth-Scopes': 'repo, user',
+        'X-Accepted-OAuth-Scopes': 'user',
         'User-Agent': config.userAgent,
         Accept: 'application/json'
       }
