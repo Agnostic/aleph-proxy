@@ -21,7 +21,18 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
-  res.render('index');
+  if (req.session.accessToken) {
+    request({
+      url: config.githubUrl + '/repos/wepow/wepow-app/pulls',
+      headers: {
+        'Accept': 'application/json'
+      }
+    }, function(error, response, body) {
+      res.json(body);
+    });
+  } else {
+    res.redirect('/auth');
+  }
 });
 
 app.get('/auth', function(req, res) {
@@ -44,7 +55,7 @@ app.get('/auth', function(req, res) {
         res.redirect(config.authorizeUrl);
       } else {
         req.session.accessToken = response.access_token;
-        res.json(req.session);
+        res.redirect('/');
       }
     });
   } else {
