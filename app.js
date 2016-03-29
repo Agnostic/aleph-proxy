@@ -57,7 +57,7 @@ app.get('/', function(req, res) {
         }
       });
 
-      res.json(pulls);
+      res.render('pulls');
     });
   } else {
     res.redirect('/auth');

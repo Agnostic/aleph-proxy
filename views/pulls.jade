@@ -2,7 +2,8 @@ html
   head
     title PR Reviewer
     link(rel='stylesheet', href='/css/bootstrap.min.css')
-  body
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js')
+  body(ng-app="prApp")
     .container
       h1 PR Reviewer
 
@@ -17,3 +18,5 @@ html
             a.list-grou-item
               h4.list-group-item-heading Heading
               p.list-group-item-text Text
+
+    script(src='/js/app.js')
