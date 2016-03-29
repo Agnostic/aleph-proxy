@@ -85,6 +85,19 @@ app.get('/auth', function(req, res) {
   });
 });
 
+app.get('/api/comments', function(req, res) {
+  var url = req.query.url;
+  request({
+    url: url + '?access_token=' + req.session.accessToken,
+    headers: {
+      'User-Agent': config.userAgent,
+      Accept: 'application/json'
+    }
+  }, function(error, response, body) {
+    res.json(JSON.parse(body));
+  });
+});
+
 app.get('/api/pulls', function(req, res) {
   if (!req.session.accessToken) {
     res.status(401).json({
@@ -107,26 +120,17 @@ app.get('/api/pulls', function(req, res) {
           reviewers = reviewers[0].replace('@wepow/', '');
 
           if (_.contains(req.session.teams, reviewers.toLowerCase())) {
-            request({
-              url: pr.comments_url + '?access_token=' + req.session.accessToken,
-              headers: {
-                'User-Agent': config.userAgent,
-                Accept: 'application/json'
-              }
-            }, function(error, response, body) {
-              pulls.push({
-                url: pr.html_url,
-                title: pr.title,
-                body: pr.body,
-                author: {
-                  name: pr.user.login,
-                  url: pr.user.html_url,
-                  avatar: pr.user.avatar_url
-                },
-                created_at: pr.created_at,
-                comments_url: pr.comments_url,
-                comments: JSON.parse(body)
-              });
+            pulls.push({
+              url: pr.html_url,
+              title: pr.title,
+              body: pr.body,
+              author: {
+                name: pr.user.login,
+                url: pr.user.html_url,
+                avatar: pr.user.avatar_url
+              },
+              created_at: pr.created_at,
+              comments_url: pr.comments_url
             });
           }
         }
