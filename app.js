@@ -25,40 +25,7 @@ app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
   if (req.session.accessToken) {
-    request({
-      url: config.apiUrl + '/repos/wepow/wepow-app/pulls?access_token=' + req.session.accessToken,
-      headers: {
-        'User-Agent': config.userAgent,
-        Accept: 'application/json'
-      }
-    }, function(error, response, body) {
-      var pulls = [];
-
-      _.each(JSON.parse(body), function(pr) {
-        var reviewers = pr.body.match(/@wepow\/\w+/);
-
-        if (reviewers) {
-          reviewers = reviewers[0].replace('@wepow/', '');
-
-          if (_.contains(req.session.teams, reviewers.toLowerCase())) {
-            pulls.push({
-              url: pr.html_url,
-              title: pr.title,
-              body: pr.body,
-              author: {
-                name: pr.user.login,
-                url: pr.user.html_url,
-                avatar: pr.user.avatar_url
-              },
-              created_at: pr.created_at,
-              comments_url: pr.comments_url
-            });
-          }
-        }
-      });
-
-      res.render('pulls');
-    });
+    res.render('pulls');
   } else {
     res.redirect('/auth');
   }
@@ -118,8 +85,47 @@ app.get('/auth', function(req, res) {
   });
 });
 
-app.get('/api', function(req, res) {
-  res.end('It works :)');
+app.get('/api/pulls', function(req, res) {
+  if (!req.session.accessToken) {
+    res.status(401).json({
+      error: 'unauthorized'
+    });
+  } else {
+    request({
+      url: config.apiUrl + '/repos/wepow/wepow-app/pulls?access_token=' + req.session.accessToken,
+      headers: {
+        'User-Agent': config.userAgent,
+        Accept: 'application/json'
+      }
+    }, function(error, response, body) {
+      var pulls = [];
+
+      _.each(JSON.parse(body), function(pr) {
+        var reviewers = pr.body.match(/@wepow\/\w+/);
+
+        if (reviewers) {
+          reviewers = reviewers[0].replace('@wepow/', '');
+
+          if (_.contains(req.session.teams, reviewers.toLowerCase())) {
+            pulls.push({
+              url: pr.html_url,
+              title: pr.title,
+              body: pr.body,
+              author: {
+                name: pr.user.login,
+                url: pr.user.html_url,
+                avatar: pr.user.avatar_url
+              },
+              created_at: pr.created_at,
+              comments_url: pr.comments_url
+            });
+          }
+        }
+      });
+
+      res.json(pulls);
+    });
+  }
 });
 
 app.listen(process.env.PORT || 5000);

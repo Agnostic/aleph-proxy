@@ -4,7 +4,8 @@ html
     link(rel='stylesheet', href='/css/bootstrap.min.css')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js')
   body(ng-app="prApp")
-    .container
+
+    .container(ng-controller='pullsController')
       h1 PR Reviewer
 
       .panel.panel-primary
