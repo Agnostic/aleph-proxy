@@ -40,7 +40,7 @@ app.get('/', function(req, res) {
         if (reviewers) {
           reviewers = reviewers[0].replace('@wepow/');
 
-          if (_.contains(req.session.teams, reviewers)) {
+          if (_.contains(req.session.teams, reviewers.toLowerCase())) {
             pulls.push(pr);
           }
         }
