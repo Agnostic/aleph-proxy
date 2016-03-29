@@ -70,6 +70,7 @@ app.get('/auth', function(req, res) {
             Accept: 'application/json'
           }
         }, function(error, response, body) {
+          return res.json(JSON.parse(body));
           var teams = [],
             response = [];
 
