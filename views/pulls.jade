@@ -6,18 +6,15 @@ html
   body(ng-app="prApp")
 
     .container(ng-controller='pullsController')
-      h1 PR Reviewer
+      h3 PR Reviewer
 
-      .panel.panel-primary
+      .panel.panel-primary(ng-repeat="pull in pulls")
+        .panel-heading
+          h3.panel-title {{ pull.name }}
         .panel-body
+          {{ pull.body }}
+        .panel-footer
+          | Approved by: <a href="#">Agnostic</a>
 
-          .list-group
-            a.list-grou-item
-              h4.list-group-item-heading Heading
-              p.list-group-item-text Text
-
-            a.list-grou-item
-              h4.list-group-item-heading Heading
-              p.list-group-item-text Text
 
     script(src='/js/app.js')
