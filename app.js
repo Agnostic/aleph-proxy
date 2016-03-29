@@ -6,6 +6,7 @@ var express = require('express'),
     authorizeUrl: 'https://github.com/login/oauth/authorize?client_id=d3d7cbd7dce23dd9de98',
     githubUrl: 'https://github.com',
     apiUrl: 'https://api.github.com',
+    userAgent: 'wepow-app',
     clientSecret: '808ec362dbf485cb5ccd3bb34652d2e080e98217',
     clientId: 'd3d7cbd7dce23dd9de98'
   };
@@ -26,7 +27,8 @@ app.get('/', function(req, res) {
     request({
       url: config.apiUrl + '/repos/wepow/wepow-app/pulls',
       headers: {
-        'Accept': 'application/json'
+        'User-Agent': config.userAgent,
+        Accept: 'application/json'
       }
     }, function(error, response, body) {
       res.json(body);
@@ -42,7 +44,7 @@ app.get('/auth', function(req, res) {
       url: config.githubUrl + '/login/oauth/access_token',
       method: 'POST',
       headers: {
-        'Accept': 'application/json'
+        Accept: 'application/json'
       },
       qs: {
         client_id: config.clientId,
