@@ -1,3 +1,8 @@
 .panel-body img {
   display: none;
 }
+
+.panel-heading a:hover,
+.panel-heading a:focus {
+  color: white;
+}
