@@ -35,7 +35,7 @@ app.get('/', function(req, res) {
       var pulls = [];
 
       _.each(JSON.parse(body), function(pr) {
-        var reviewers = a.match(/@wepow\/\w+/);
+        var reviewers = pr.body.match(/@wepow\/\w+/);
 
         if (reviewers) {
           reviewers = reviewers.replace('@wepow/');
