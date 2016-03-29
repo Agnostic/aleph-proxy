@@ -10,9 +10,9 @@ html
 
       .panel.panel-primary(ng-repeat="pull in pulls")
         .panel-heading
-          h3.panel-title {{ pull.name }}
+          h3.panel-title {{ pull.title }}
         .panel-body
-          {{ pull.body }}
+          div(ng-bind-html='pull.body | to_trusted')
         .panel-footer
           | Approved by: <a href="#">Agnostic</a>
 
