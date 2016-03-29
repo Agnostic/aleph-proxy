@@ -10,7 +10,7 @@ html
       h3 PR Reviewer
       hr
 
-      .panel.panel-default(ng-repeat="pull in pulls", ng-class="{'panel-success': pull.approvedBy.length}")
+      .panel.panel-default(ng-repeat="pull in pulls", ng-class="{'panel-success': pull.approvedBy.length > 1}")
         .panel-heading
           a(ng-href='{{pull.url}}', target='_blank').panel-title {{ pull.title }}
         .panel-body
