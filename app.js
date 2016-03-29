@@ -5,6 +5,7 @@ var express = require('express'),
   config = {
     authorizeUrl: 'https://github.com/login/oauth/authorize?client_id=d3d7cbd7dce23dd9de98',
     githubUrl: 'https://github.com',
+    apiUrl: 'https://api.github.com',
     clientSecret: '808ec362dbf485cb5ccd3bb34652d2e080e98217',
     clientId: 'd3d7cbd7dce23dd9de98'
   };
@@ -23,7 +24,7 @@ app.set('view engine', 'jade');
 app.get('/', function(req, res) {
   if (req.session.accessToken) {
     request({
-      url: config.githubUrl + '/repos/wepow/wepow-app/pulls',
+      url: config.apiUrl + '/repos/wepow/wepow-app/pulls',
       headers: {
         'Accept': 'application/json'
       }
