@@ -3,6 +3,7 @@ var express = require('express'),
   session = require('express-session'),
   request = require('request'),
   config = {
+    authorizeUrl: 'https://github.com/login/oauth/authorize?client_id=d3d7cbd7dce23dd9de98',
     githubUrl: 'https://github.com',
     clientSecret: '808ec362dbf485cb5ccd3bb34652d2e080e98217',
     clientId: 'd3d7cbd7dce23dd9de98'
@@ -37,15 +38,17 @@ app.get('/auth', function(req, res) {
         code: req.query.code
       }
     }, function(error, response, body) {
-      // var data = body.split('&')[0],
-      //   accessToken = data.split('=')[1];
+      var response = JSON.parse(body);
 
-      // req.session.accessToken = accessToken;
-      // res.json(req.session);
-      res.end(body);
+      if (response.error) {
+        res.redirect(config.authorizeUrl);
+      } else {
+        req.session.accessToken = response.access_token;
+        res.json(req.session);
+      }
     });
   } else {
-    res.redirect('/');
+    res.redirect(config.authorizeUrl);
   }
 });
 
