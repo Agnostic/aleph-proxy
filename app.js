@@ -1,5 +1,6 @@
 var express = require('express'),
   app = express(),
+  session = require('express-session'),
   request = require('request'),
   config = {
     githubUrl: 'https://github.com',
@@ -7,8 +8,12 @@ var express = require('express'),
     clientId: 'd3d7cbd7dce23dd9de98'
   };
 
-// Static assets
+// Middlewares
 app.use(express.static(__dirname + '/public'));
+app.use(session({
+  secret: '(*96sdS654%(()^))',
+  cookie: { maxAge: 60000 }
+}));
 
 // Template engine
 app.set('views', __dirname + '/views');
@@ -23,12 +28,20 @@ app.get('/auth', function(req, res) {
     request({
       url: config.githubUrl + '/login/oauth/access_token',
       method: 'POST',
+      headers: {
+        'Accept': 'application/json'
+      },
       qs: {
         client_id: config.clientId,
         client_secret: config.clientSecret,
         code: req.query.code
       }
     }, function(error, response, body) {
+      // var data = body.split('&')[0],
+      //   accessToken = data.split('=')[1];
+
+      // req.session.accessToken = accessToken;
+      // res.json(req.session);
       res.end(body);
     });
   } else {
