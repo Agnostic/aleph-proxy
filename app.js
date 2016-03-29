@@ -31,7 +31,8 @@ app.get('/', function(req, res) {
         Accept: 'application/json'
       }
     }, function(error, response, body) {
-      res.json(body);
+      // res.json(JSON.parse(body));
+      res.end(req.session.accessToken);
     });
   } else {
     res.redirect('/auth');
