@@ -42,6 +42,8 @@ app.get('/', function(req, res) {
 });
 
 app.get('/auth', function(req, res) {
+  session.destroy(req.session.id);
+
   if (req.query.code) {
     request({
       url: config.githubUrl + '/login/oauth/access_token',
