@@ -32,9 +32,21 @@ app.get('/', function(req, res) {
         Accept: 'application/json'
       }
     }, function(error, response, body) {
-      // res.json(JSON.parse(body));
-      res.json(req.session);
-      // res.render('pulls', JSON.parse(body));
+      var pulls = [];
+
+      _.each(JSON.parse(body), function(pr) {
+        var reviewers = a.match(/@wepow\/\w+/);
+
+        if (reviewers) {
+          reviewers = reviewers.replace('@wepow/');
+
+          if (_.contains(req.sessions.teams, reviewers)) {
+            pulls.push(pr);
+          }
+        }
+      });
+
+      res.json(pulls);
     });
   } else {
     res.redirect('/auth');
