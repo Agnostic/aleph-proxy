@@ -19,5 +19,6 @@
   .panel-body > div {
     max-height: 25px;
     text-overflow: ellipsis;
+    overflow: hidden;
   }
 }
