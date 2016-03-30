@@ -6,3 +6,18 @@
 .panel-success a:focus {
   color: white;
 }
+
+@media(max-width: 600px) {
+  h3 {
+    font-size: 18px;
+  }
+
+  hr {
+    margin: 15px 0;
+  }
+
+  .panel-body > div {
+    max-height: 25px;
+    text-overflow: ellipsis;
+  }
+}
