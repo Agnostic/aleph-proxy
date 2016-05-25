@@ -1,0 +1,8 @@
+{
+  "authorizeUrl": "https://github.com/login/oauth/authorize?client_id=CLIENT_ID&scope=user,repo",
+  "githubUrl": "https://github.com",
+  "apiUrl": "https://api.github.com",
+  "userAgent": "your-app-name",
+  "clientSecret": "SECRET-HERE",
+  "clientId": "CLIENT-ID"
+}

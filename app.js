@@ -3,14 +3,7 @@ var express = require('express'),
   session = require('express-session'),
   axios = require('axios'),
   _ = require('underscore'),
-  config = {
-    authorizeUrl: 'https://github.com/login/oauth/authorize?client_id=d3d7cbd7dce23dd9de98&scope=user,repo',
-    githubUrl: 'https://github.com',
-    apiUrl: 'https://api.github.com',
-    userAgent: 'wepow-app',
-    clientSecret: '808ec362dbf485cb5ccd3bb34652d2e080e98217',
-    clientId: 'd3d7cbd7dce23dd9de98'
-  };
+  config = require('./config.json');
 
 // Middlewares
 app.use(express.static(__dirname + '/public'));
@@ -25,8 +18,7 @@ app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
   if (req.session.accessToken) {
-    res.end();
-    // res.render('pulls');
+    res.end('Hi :)');
   } else {
     res.redirect('/auth');
   }
@@ -82,27 +74,27 @@ app.get('/auth', function(req, res) {
   });
 });
 
-app.get('/api/comments', function(req, res) {
-  var url = req.query.url;
-  axios({
-    url: url + '?access_token=' + req.session.accessToken,
-    headers: {
-      'User-Agent': config.userAgent,
-      Accept: 'application/json'
-    }
-  }).then(function(response) {
-    res.json(response.data);
-  });
-});
-
 app.get('/api/pulls', function(req, res) {
+  var repoUrl = '/repos/';
+
+  // TODO(gilberto)
+  // Move this validation before this route callback
   if (!req.session.accessToken) {
     res.status(401).json({
       error: 'unauthorized'
     });
   } else {
+
+    if (req.query.user) {
+      repoUrl += req.query.user;
+    }
+
+    if (req.query.repo) {
+      repoUrl += '/' + req.query.repo;
+    }
+
     axios({
-      url: config.apiUrl + '/repos/wepow/wepow-app/pulls?access_token=' + req.session.accessToken,
+      url: config.apiUrl + repoUrl + '/pulls?access_token=' + req.session.accessToken,
       headers: {
         'User-Agent': config.userAgent,
         Accept: 'application/json'
@@ -148,8 +140,6 @@ app.get('/api/pulls', function(req, res) {
 
             if (!data || !data.length) return;
 
-            console.log('Comments', data[0]);
-
             var pr = _.find(pulls, function(pull) {
               return pull.url.match(/[0-9]+$/)[0] === data[0].html_url.match(/\/([0-9]+)#/)[1];
             });
@@ -157,8 +147,8 @@ app.get('/api/pulls', function(req, res) {
             if (pr) {
               pr.comments = data.map(function(comment) {
                 return {
-                  user: comment.login,
-                  avatar: comment.avatar_url,
+                  user: comment.user.login,
+                  avatar: comment.user.avatar_url,
                   comment: comment.body,
                   created_at: comment.created_at
                 };
