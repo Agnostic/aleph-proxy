@@ -1,7 +1,7 @@
 var express = require('express'),
   app = express(),
   session = require('express-session'),
-  request = require('request'),
+  axios = require('axios'),
   _ = require('underscore'),
   config = {
     authorizeUrl: 'https://github.com/login/oauth/authorize?client_id=d3d7cbd7dce23dd9de98&scope=user,repo',
@@ -25,7 +25,8 @@ app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
   if (req.session.accessToken) {
-    res.render('pulls');
+    res.end();
+    // res.render('pulls');
   } else {
     res.redirect('/auth');
   }
@@ -35,42 +36,38 @@ app.get('/auth', function(req, res) {
   req.session.regenerate(function() {
 
     if (req.query.code) {
-      request({
+      axios({
         url: config.githubUrl + '/login/oauth/access_token',
-        method: 'POST',
+        method: 'post',
         headers: {
           Accept: 'application/json'
         },
-        qs: {
+        params: {
           client_id: config.clientId,
           client_secret: config.clientSecret,
           code: req.query.code
         }
-      }, function(error, response, body) {
-        var response = JSON.parse(body);
+      }).then(function(response) {
+        var data = response.data;
 
-        if (response.error) {
+        if (data.error) {
           res.redirect(config.authorizeUrl);
         } else {
-          req.session.accessToken = response.access_token;
+          req.session.accessToken = data.access_token;
 
           // Get user teams
-          request({
+          axios({
             url: config.apiUrl + '/user/teams?access_token=' + req.session.accessToken,
             headers: {
               'User-Agent': config.userAgent,
               Accept: 'application/json'
             }
-          }, function(error, response, body) {
+          }).then(function(response) {
             var teams = [],
-              response = [];
+              data = response.data || [];
 
-            try {
-              response = JSON.parse(body);
-            } catch(e) {}
-
-            for (var i = 0; i < response.length; i++) {
-              teams.push(response[i].name.toLowerCase());
+            for (var i = 0; i < data.length; i++) {
+              teams.push(data[i].name.toLowerCase());
             }
 
             req.session.teams = teams;
@@ -87,14 +84,14 @@ app.get('/auth', function(req, res) {
 
 app.get('/api/comments', function(req, res) {
   var url = req.query.url;
-  request({
+  axios({
     url: url + '?access_token=' + req.session.accessToken,
     headers: {
       'User-Agent': config.userAgent,
       Accept: 'application/json'
     }
-  }, function(error, response, body) {
-    res.json(JSON.parse(body));
+  }).then(function(response) {
+    res.json(response.data);
   });
 });
 
@@ -110,10 +107,11 @@ app.get('/api/pulls', function(req, res) {
         'User-Agent': config.userAgent,
         Accept: 'application/json'
       }
-    }, function(error, response, body) {
-      var pulls = [];
+    }, function(response) {
+      var pulls = [],
+        data = response.data;
 
-      _.each(JSON.parse(body), function(pr) {
+      _.each(data, function(pr) {
         var reviewers = pr.body.match(/@wepow\/\w+/);
 
         if (reviewers) {
