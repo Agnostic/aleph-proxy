@@ -101,13 +101,13 @@ app.get('/api/pulls', function(req, res) {
       error: 'unauthorized'
     });
   } else {
-    request({
+    axios({
       url: config.apiUrl + '/repos/wepow/wepow-app/pulls?access_token=' + req.session.accessToken,
       headers: {
         'User-Agent': config.userAgent,
         Accept: 'application/json'
       }
-    }, function(response) {
+    }).then(function(response) {
       var pulls = [],
         data = response.data;
 
