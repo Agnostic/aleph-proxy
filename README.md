@@ -1,5 +1,5 @@
 # aleph-proxy
-Backend for the Aleph Front-End.
+Backend for the [Aleph Front-End](https://github.com/ooyala/aleph).
 
 This is a simple script that gets all the pull requests of an specified repository that needs to be reviewed, it will return all comments associated to the specified PR.
 
