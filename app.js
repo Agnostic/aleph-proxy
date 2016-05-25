@@ -109,6 +109,7 @@ app.get('/api/pulls', function(req, res) {
       }
     }).then(function(response) {
       var pulls = [],
+        comments = [],
         data = response.data;
 
       _.each(data, function(pr) {
@@ -130,11 +131,22 @@ app.get('/api/pulls', function(req, res) {
               created_at: pr.created_at,
               comments_url: pr.comments_url
             });
+
+            commentsRequests.push(pr.comments_url);
           }
         }
       });
 
-      res.json(pulls);
+      if (commentsRequests.length) {
+        axios.all(commentsRequests.map(function(request) {
+          return axios.get(request + '?access_token=' + req.session.accessToken);
+        })).then(function(data) {
+          res.json(data);
+        });
+      } else {
+        res.json(pulls);
+      }
+
     });
   }
 });
