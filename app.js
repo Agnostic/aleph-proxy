@@ -109,7 +109,7 @@ app.get('/api/pulls', function(req, res) {
       }
     }).then(function(response) {
       var pulls = [],
-        comments = [],
+        commentsRequests = [],
         data = response.data;
 
       _.each(data, function(pr) {
@@ -120,6 +120,7 @@ app.get('/api/pulls', function(req, res) {
 
           if (_.contains(req.session.teams, reviewers.toLowerCase())) {
             pulls.push({
+              id: pr.id,
               url: pr.html_url,
               title: pr.title,
               body: pr.body,
@@ -129,7 +130,7 @@ app.get('/api/pulls', function(req, res) {
                 avatar: pr.user.avatar_url
               },
               created_at: pr.created_at,
-              comments_url: pr.comments_url
+              comments: []
             });
 
             commentsRequests.push(pr.comments_url);
@@ -140,8 +141,32 @@ app.get('/api/pulls', function(req, res) {
       if (commentsRequests.length) {
         axios.all(commentsRequests.map(function(request) {
           return axios.get(request + '?access_token=' + req.session.accessToken);
-        })).then(function(data) {
-          res.json(data);
+        })).then(function(responses) {
+
+          responses.forEach(function(response) {
+            var data = response.data;
+
+            if (!data || !data.length) return;
+
+            console.log('Comments', data[0]);
+
+            var pr = _.find(pulls, function(pull) {
+              return pull.url.match(/[0-9]+$/)[0] === data[0].html_url.match(/\/([0-9]+)#/)[1];
+            });
+
+            if (pr) {
+              pr.comments = data.map(function(comment) {
+                return {
+                  user: comment.login,
+                  avatar: comment.avatar_url,
+                  comment: comment.body,
+                  created_at: comment.created_at
+                };
+              });
+            }
+          });
+
+          res.json(pulls);
         });
       } else {
         res.json(pulls);
