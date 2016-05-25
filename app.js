@@ -85,8 +85,12 @@ app.get('/api/pulls', function(req, res) {
     });
   } else {
 
-    if (req.query.user) {
-      repoUrl += req.query.user;
+    if (!req.query.user && !req.query.repo) {
+      return res.status(400).json({ error: 'You must especify a user/org and a repo.' });
+    }
+
+    if (req.query.user || req.query.org) {
+      repoUrl += (req.query.user || req.query.org);
     }
 
     if (req.query.repo) {
@@ -103,6 +107,10 @@ app.get('/api/pulls', function(req, res) {
       var pulls = [],
         commentsRequests = [],
         data = response.data;
+
+      if (!data) {
+        return res.json([]);
+      }
 
       _.each(data, function(pr) {
         var reviewers = pr.body.match(/@wepow\/\w+/);
