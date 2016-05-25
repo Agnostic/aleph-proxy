@@ -1,8 +1,0 @@
-{
-  "authorizeUrl": "https://github.com/login/oauth/authorize?client_id=d3d7cbd7dce23dd9de98&scope=user,repo",
-  "githubUrl": "https://github.com",
-  "apiUrl": "https://api.github.com",
-  "userAgent": "aleph-app",
-  "clientSecret": "808ec362dbf485cb5ccd3bb34652d2e080e98217",
-  "clientId": "d3d7cbd7dce23dd9de98"
-}
