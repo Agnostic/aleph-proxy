@@ -26,7 +26,6 @@ app.get('/', function(req, res) {
 
 app.get('/auth', function(req, res) {
   req.session.regenerate(function() {
-
     if (req.query.code) {
       axios({
         url: config.githubUrl + '/login/oauth/access_token',
@@ -105,44 +104,34 @@ app.get('/api/pulls', function(req, res) {
       }
     }).then(function(response) {
       var pulls = [],
-        commentsRequests = [],
         data = response.data;
 
-      if (!data) {
-        return res.json([]);
-      }
-
       _.each(data, function(pr) {
-        var reviewers = pr.body.match(/@wepow\/\w+/);
+        var reviewers = pr.body.match(/(@\w+)/g);
 
         if (reviewers) {
-          reviewers = reviewers[0].replace('@wepow/', '');
-
-          if (_.contains(req.session.teams, reviewers.toLowerCase())) {
-            pulls.push({
-              id: pr.id,
-              url: pr.html_url,
-              title: pr.title,
-              body: pr.body,
-              author: {
-                name: pr.user.login,
-                url: pr.user.html_url,
-                avatar: pr.user.avatar_url
-              },
-              created_at: pr.created_at,
-              comments: []
-            });
-
-            commentsRequests.push(pr.comments_url);
-          }
+          pulls.push({
+            id: pr.id,
+            url: pr.html_url,
+            title: pr.title,
+            body: pr.body,
+            reviewers: reviewers,
+            author: {
+              name: pr.user.login,
+              url: pr.user.html_url,
+              avatar: pr.user.avatar_url
+            },
+            created_at: pr.created_at,
+            comments: []
+          });
         }
       });
 
-      if (commentsRequests.length) {
-        axios.all(commentsRequests.map(function(request) {
-          return axios.get(request + '?access_token=' + req.session.accessToken);
-        })).then(function(responses) {
+      if (pulls.length) {
+        axios.all(data.map(function(pull) {
+          return axios.get(pull.comments_url + '?access_token=' + req.session.accessToken);
 
+        })).then(function(responses) {
           responses.forEach(function(response) {
             var data = response.data;
 
@@ -170,6 +159,10 @@ app.get('/api/pulls', function(req, res) {
         res.json(pulls);
       }
 
+    }).catch(function(response) {
+      res.status(404).json({
+        error: response.data.message
+      });
     });
   }
 });
